@@ -1,19 +1,129 @@
 // --- MUSIC CONTROL ---
 const bgMusic = document.getElementById("bgMusic");
 const playBtn = document.getElementById("playBtn");
+const nowPlaying = document.getElementById("nowPlaying");
+
+// Playlist - Tambahkan lagu di sini
+const playlist = [
+    {
+        src: "assets/music/kitausahakanrumahitu.mp3",
+        title: "Kita Usahakan Rumah Itu"
+    },
+    {
+        src: "assets/music/aboutyou.mp3",
+        title: "About You 5314"
+    },
+    {
+        src: "assets/music/suratcinta.mp3",
+        title: "Surat Cinta Untuk Marsela Saputri"
+    },
+    {
+        src: "assets/music/imissyou.mp3",
+        title: "IM MISS YOU 5314"
+    },
+    {
+        src: "assets/music/akumilikmu.mp3",
+        title: "Aku Milikmu"
+    },
+    {
+        src: "assets/music/bilangilopyu.mp3",
+        title: "Bilang I Love You"
+    }
+    // Tambahkan lagu lain di sini
+];
+
+let currentTrackIndex = 0;
 let isPlaying = false;
 
+// Fungsi untuk memutar lagu berdasarkan index
+function playTrack(index) {
+    if (index < 0 || index >= playlist.length) {
+        // Jika index tidak valid, kembali ke awal
+        currentTrackIndex = 0;
+    } else {
+        currentTrackIndex = index;
+    }
+    
+    const track = playlist[currentTrackIndex];
+    bgMusic.src = track.src;
+    bgMusic.load();
+    bgMusic.play()
+        .then(() => {
+            isPlaying = true;
+            updatePlayButton();
+            updateNowPlaying();
+        })
+        .catch(error => {
+            console.error("Error memutar musik:", error);
+            isPlaying = false;
+            updatePlayButton();
+        });
+}
+
+// Fungsi untuk lagu berikutnya
+function nextTrack() {
+    const nextIndex = currentTrackIndex + 1;
+    if (nextIndex < playlist.length) {
+        playTrack(nextIndex);
+    } else {
+        // Jika sudah lagu terakhir, kembali ke awal (loop)
+        playTrack(0);
+    }
+}
+
+// Event listener ketika lagu selesai
+bgMusic.addEventListener('ended', function() {
+    console.log("Lagu selesai, memutar lagu berikutnya...");
+    nextTrack();
+});
+
+// Fungsi toggle play/pause
 function toggleMusic() {
     if (isPlaying) {
         bgMusic.pause();
-        playBtn.innerHTML = '<i class="fas fa-play"></i>';
-        playBtn.style.animation = "pulse 2s infinite";
+        isPlaying = false;
     } else {
+        // Jika belum ada lagu yang dimuat, mulai dari lagu pertama
+        if (!bgMusic.src || bgMusic.src === window.location.href) {
+            playTrack(0);
+            return;
+        }
         bgMusic.play();
+        isPlaying = true;
+    }
+    updatePlayButton();
+    updateNowPlaying();
+}
+
+// Update tampilan tombol play/pause
+function updatePlayButton() {
+    if (isPlaying) {
         playBtn.innerHTML = '<i class="fas fa-pause"></i>';
         playBtn.style.animation = "none";
+    } else {
+        playBtn.innerHTML = '<i class="fas fa-play"></i>';
+        playBtn.style.animation = "pulse 2s infinite";
     }
-    isPlaying = !isPlaying;
+}
+
+// Update tampilan judul lagu yang sedang diputar
+function updateNowPlaying() {
+    if (nowPlaying) {
+        if (isPlaying && playlist[currentTrackIndex]) {
+            nowPlaying.textContent = `🎵 ${playlist[currentTrackIndex].title}`;
+            nowPlaying.style.opacity = "1";
+        } else {
+            nowPlaying.textContent = "";
+            nowPlaying.style.opacity = "0";
+        }
+    }
+}
+
+// Inisialisasi: muat lagu pertama
+if (playlist.length > 0) {
+    bgMusic.src = playlist[0].src;
+    bgMusic.load();
+    updateNowPlaying();
 }
 
 // --- HAMBURGER MENU ---
