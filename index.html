@@ -30,18 +30,20 @@
         <li style="--i:10;--s:1;--d:12;--x:95;"><i class="fas fa-heart"></i></li>
     </ul>
 
-    <!-- Audio Element -->
-    <audio id="bgMusic" loop>
-        <source src="assets/music/bilangilopyu.mp4" type="audio/mpeg">
-        Browser kamu tidak support audio.
-    </audio>
+<!-- Audio Element -->
+<audio id="bgMusic">
+    <!-- Source akan diubah via JavaScript -->
+    Browser kamu tidak support audio.
+</audio>
 
-    <!-- Tombol Music Floating -->
-    <div class="music-control">
-        <button id="playBtn" onclick="toggleMusic()">
-            <i class="fas fa-play"></i>
-        </button>
-    </div>
+<!-- Tombol Music Floating -->
+<div class="music-control">
+    <button id="playBtn" onclick="toggleMusic()">
+        <i class="fas fa-play"></i>
+    </button>
+    <!-- Indikator lagu sedang diputar -->
+    <div class="now-playing" id="nowPlaying"></div>
+</div>
 
     <!-- Navbar -->
     <nav class="navbar">
